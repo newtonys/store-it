@@ -16,8 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { createAccount } from "@/lib/actions/user.actions";
+import { createAccount, signInUser } from "@/lib/actions/user.actions";
 import OTPModal from "./OTPModal";
+import { avatar1, avatar2 } from "@/constants";
 
 type FormType = "sign-in" | "sign-up";
 
@@ -28,6 +29,7 @@ const authFormSchema = (formType: FormType) => {
       formType === "sign-up"
         ? z.string().min(2).max(50)
         : z.string().optional(),
+    avatar: formType === "sign-up" ? z.string().min(1) : z.string().optional(),
   });
 };
 
@@ -42,6 +44,7 @@ function AuthForm({ type }: { type: FormType }) {
     defaultValues: {
       fullName: "",
       email: "",
+      avatar: avatar1,
     },
   });
 
@@ -50,10 +53,14 @@ function AuthForm({ type }: { type: FormType }) {
     setIsLoading(true);
     setErrorMessage("");
     try {
-      const user = await createAccount({
-        fullName: values.fullName || "",
-        email: values.email,
-      });
+      const user =
+        type === "sign-up"
+          ? await createAccount({
+              fullName: values.fullName || "",
+              email: values.email,
+              avatar: values.avatar || avatar1,
+            })
+          : await signInUser({ email: values.email });
 
       setAccountId(user.accountId);
     } catch {
@@ -109,6 +116,72 @@ function AuthForm({ type }: { type: FormType }) {
               </FormItem>
             )}
           />
+          {type === "sign-up" && (
+            <FormField
+              control={form.control}
+              name="avatar"
+              render={({ field }) => (
+                <FormItem>
+                  <div>
+                    <FormLabel>Choose your avatar</FormLabel>
+                    <FormControl>
+                      <div className=" flex flex-row">
+                        <label htmlFor="avatarbtn">
+                          <input
+                            type="radio"
+                            id="avatarbtn"
+                            value={avatar1}
+                            checked={field.value === avatar1}
+                            onChange={field.onChange}
+                            name="avatarOption"
+                            className="peer hidden"
+                          />
+                          <div
+                            className={`border-4 rounded-full overflow-hidden cursor-pointer transition-all duration-200 m-3 
+              ${field.value === avatar1 ? "border-red" : "border-transparent"}`}
+                          >
+                            <img
+                              src={avatar1}
+                              alt="avatar 1"
+                              width={100}
+                              height={100}
+                              className="rounded-full cursor-pointer "
+                            />
+                          </div>
+                        </label>
+
+                        <label htmlFor="avatarbtn2">
+                          <input
+                            type="radio"
+                            id="avatarbtn2"
+                            value={avatar2}
+                            checked={field.value === avatar2}
+                            onChange={field.onChange}
+                            name="avatarOption"
+                            className="peer hidden"
+                          />
+                          <div
+                            className={`border-4 rounded-full overflow-hidden cursor-pointer transition-all duration-200 m-3 
+              ${field.value === avatar2 ? "border-red" : "border-transparent"}`}
+                          >
+                            <img
+                              src={avatar2}
+                              alt="avatar 2"
+                              width={100}
+                              height={100}
+                              className="rounded-full cursor-pointer w-[100px] h-[100px]"
+                            />
+                          </div>
+                        </label>
+                      </div>
+                    </FormControl>
+                  </div>
+
+                  <FormMessage className="shad-form-message" />
+                </FormItem>
+              )}
+            />
+          )}
           <Button
             type="submit"
             className="form-submit-button"

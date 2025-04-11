@@ -123,7 +123,9 @@ function AuthForm({ type }: { type: FormType }) {
               render={({ field }) => (
                 <FormItem>
                   <div>
-                    <FormLabel>Choose your avatar</FormLabel>
+                    <FormLabel className="shad-form-label">
+                      Choose your avatar
+                    </FormLabel>
                     <FormControl>
                       <div className=" flex flex-row">
                         <label htmlFor="avatarbtn">

@@ -22,12 +22,12 @@ interface Props {
   fullName: string;
   email: string;
   avatar: string;
-  ownerId: string;
+  $id: string;
   accountId: string;
 }
 
 function MobileNavigation({
-  ownerId,
+  $id: ownerId,
   accountId,
   fullName,
   email,
@@ -102,7 +102,7 @@ function MobileNavigation({
 
           <div className="flex flex-col justify-between gap-5 pb-5"></div>
 
-          <FileUploader />
+          <FileUploader ownerId={ownerId} accountId={accountId} />
           <Button
             type="submit"
             className="mobile-sign-out-button"

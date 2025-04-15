@@ -31,6 +31,7 @@ import {
 } from "@/lib/actions/file.actions";
 import { usePathname } from "next/navigation";
 import { FileDetails, ShareInput } from "./ActionsModalContent";
+import { ActionType } from "@/types";
 
 function ActionDropDown({ file }: { file: Models.Document }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
